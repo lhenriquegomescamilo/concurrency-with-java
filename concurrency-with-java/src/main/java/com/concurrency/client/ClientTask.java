@@ -1,6 +1,8 @@
 package com.concurrency.client;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -13,10 +15,14 @@ public class ClientTask {
         Socket socket = new Socket("localhost", 12345);
         System.out.println("Connection avaliable");
 
-        Scanner scanner = new Scanner(System.in);
-        String newLine = scanner.nextLine();
-        System.out.println(newLine);
+        PrintStream printOut = new PrintStream(socket.getOutputStream());
+        printOut.println("Client 1");
 
+        Scanner keyboard = new Scanner(System.in);
+        String newLine = keyboard.nextLine();
+
+        printOut.close();
+        keyboard.close();
         socket.close();
     }
 }

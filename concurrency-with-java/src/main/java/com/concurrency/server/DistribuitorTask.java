@@ -1,6 +1,8 @@
 package com.concurrency.server;
 
+import java.io.IOException;
 import java.net.Socket;
+import java.util.Scanner;
 
 /**
  * Created by luis.camilo on 13/09/2016.
@@ -15,10 +17,15 @@ public class DistribuitorTask implements Runnable {
     @Override
     public void run() {
         try {
-            Thread.sleep(2000);
+
             System.out.println("Distributing tasks "+ socket);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Scanner inputClient = new Scanner(socket.getInputStream());
+            while(inputClient.hasNext()){
+                String command = inputClient.nextLine();
+                System.out.println(command);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
