@@ -13,7 +13,7 @@ public class ServerTask {
     public static void main(String... args) throws IOException {
         System.out.println("---- Begin server -----");
         ServerSocket serverSocket = new ServerSocket(12345);
-        ExecutorService threadPool = Executors.newFixedThreadPool(2);
+        ExecutorService threadPool = Executors.newCachedThreadPool();
 
         while (true) {
             Socket socket = serverSocket.accept();
