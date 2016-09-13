@@ -13,6 +13,9 @@ public class ServerTask {
         ServerSocket serverSocket = new ServerSocket(12345);
         while (true) {
             Socket socket = serverSocket.accept();
+            DistribuitorTask distribuitorTask = new DistribuitorTask(socket);
+            Thread thread = new Thread(distribuitorTask);
+            thread.start();
             System.out.println("Accepting new client in port " + socket.getPort());
         }
     }
