@@ -2,3 +2,4 @@ concurrency-with-java/.idea/
 concurrency-with-java/concurrency-with-java.iml
 concurrency-with-java/out/
 .idea/
+concurrency-with-java/target/class
