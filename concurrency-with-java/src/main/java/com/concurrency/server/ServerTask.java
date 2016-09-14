@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 public class ServerTask {
     private final ServerSocket serverSocket;
     private final ExecutorService threadPool;
-    private Boolean isRunning;
+    private volatile Boolean isRunning;
 
     ServerTask() throws IOException {
         System.out.println("---- Begin server -----");
