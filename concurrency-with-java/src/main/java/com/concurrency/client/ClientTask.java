@@ -1,7 +1,6 @@
 package com.concurrency.client;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
@@ -11,18 +10,46 @@ import java.util.Scanner;
  */
 public class ClientTask {
 
-    public static void main(String... args) throws IOException {
+    public static void main(String... args) throws IOException, InterruptedException {
         Socket socket = new Socket("localhost", 12345);
-        System.out.println("Connection avaliable");
 
-        PrintStream printOut = new PrintStream(socket.getOutputStream());
-        printOut.println("Client 1");
+        Thread threadSendCommandToServer = new Thread(() -> {
+            try {
+                System.out.println("You can send command : ");
+                PrintStream printOut = new PrintStream(socket.getOutputStream());
+                Scanner keyboard = new Scanner(System.in);
+                while (keyboard.hasNextLine()) {
+                    String newLine = keyboard.nextLine();
+                    if (newLine.trim().equals("exit"))
+                        break;
+                    printOut.println(newLine);
+                }
+                printOut.close();
+                keyboard.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        Thread threadReciverResponseOfServer = new Thread(() -> {
+            Scanner reponse = null;
+            try {
+                System.out.println("Reciever command : ");
+                reponse = new Scanner(socket.getInputStream());
+                while (reponse.hasNextLine()) {
+                    String reponseServer = reponse.nextLine();
+                    System.out.println(reponseServer);
+                }
+                reponse.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        threadReciverResponseOfServer.start();
+        threadSendCommandToServer.start();
 
-        Scanner keyboard = new Scanner(System.in);
-        String newLine = keyboard.nextLine();
-
-        printOut.close();
-        keyboard.close();
+        threadSendCommandToServer.join();
+        System.out.println("Closing connection with server");
         socket.close();
+
     }
 }

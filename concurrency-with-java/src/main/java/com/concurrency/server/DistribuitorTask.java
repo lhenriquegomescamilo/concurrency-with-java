@@ -14,13 +14,14 @@ public class DistribuitorTask implements Runnable {
     public DistribuitorTask(Socket socket) {
         this.socket = socket;
     }
+
     @Override
     public void run() {
         try {
 
-            System.out.println("Distributing tasks "+ socket);
+            System.out.println("Distributing tasks " + socket);
             Scanner inputClient = new Scanner(socket.getInputStream());
-            while(inputClient.hasNext()){
+            while (inputClient.hasNext()) {
                 String command = inputClient.nextLine();
                 System.out.println(command);
             }
