@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by luis.camilo on 12/09/2016.
  */
 public class ServerTask {
+    private static final Integer SIZE_THREADPOOL = 4;
     private final ServerSocket serverSocket;
     private final ExecutorService threadPool;
     private AtomicBoolean isRunning;
@@ -20,7 +21,7 @@ public class ServerTask {
         System.out.println("---- Begin server -----");
         this.serverSocket = new ServerSocket(12345);
         this.isRunning = new AtomicBoolean(true);
-        this.threadPool = Executors.newCachedThreadPool();
+        this.threadPool = Executors.newFixedThreadPool(SIZE_THREADPOOL);
     }
 
     public static void main(String... args) throws IOException {
@@ -33,7 +34,7 @@ public class ServerTask {
         while (this.isRunning.get()) {
             try {
                 Socket socket = serverSocket.accept();
-                DistribuitorTask distribuitorTask = new DistribuitorTask(socket, this);
+                DistribuitorTask distribuitorTask = new DistribuitorTask(threadPool,socket, this);
                 threadPool.execute(distribuitorTask);
                 System.out.println("Accepting new client in port " + socket.getPort());
             } catch (SocketException e) {
