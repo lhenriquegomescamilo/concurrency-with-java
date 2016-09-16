@@ -20,7 +20,7 @@ public class DistribuitorTask implements Runnable {
     @Override
     public void run() {
         try {
-            System.out.println("Distributing tasks " + socket);
+            System.out.println("Distributing tasks ");
             Scanner inputClient = new Scanner(socket.getInputStream());
             PrintStream outPrintStream = new PrintStream(socket.getOutputStream());
 
@@ -43,10 +43,12 @@ public class DistribuitorTask implements Runnable {
                     default:
                         outPrintStream.println("Command not found");
                 }
+                System.out.println("Command of client is "+command);
             }
             outPrintStream.close();
             inputClient.close();
         } catch (Exception e) {
+            System.out.println("type error " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
     }

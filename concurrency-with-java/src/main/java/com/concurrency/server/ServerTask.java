@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by luis.camilo on 12/09/2016.
@@ -13,37 +14,41 @@ import java.util.concurrent.Executors;
 public class ServerTask {
     private final ServerSocket serverSocket;
     private final ExecutorService threadPool;
-    private volatile Boolean isRunning;
+    private AtomicBoolean isRunning;
 
     ServerTask() throws IOException {
         System.out.println("---- Begin server -----");
         this.serverSocket = new ServerSocket(12345);
+        this.isRunning = new AtomicBoolean(true);
         this.threadPool = Executors.newCachedThreadPool();
-        this.isRunning = true;
-    }
-
-    public void run() {
-        while (this.isRunning) {
-            try (Socket socket = serverSocket.accept()) {
-                DistribuitorTask distribuitorTask = new DistribuitorTask(socket, this);
-                threadPool.execute(distribuitorTask);
-                System.out.println("Accepting new client in port " + socket.getPort());
-            }catch (Exception e){
-                System.out.println("Server is ruunig ?"+this.isRunning);
-            }
-        }
-
-    }
-
-    public void stop() throws IOException {
-        this.isRunning = false;
-        serverSocket.close();
-        threadPool.shutdown();
     }
 
     public static void main(String... args) throws IOException {
         ServerTask server = new ServerTask();
         server.run();
         server.stop();
+    }
+
+    public void run() {
+        while (this.isRunning.get()) {
+            try {
+                Socket socket = serverSocket.accept();
+                System.out.println("Socket is closed "+socket.isConnected());
+                DistribuitorTask distribuitorTask = new DistribuitorTask(socket, this);
+                threadPool.execute(distribuitorTask);
+                System.out.println("Accepting new client in port " + socket.getPort());
+            } catch (SocketException e) {
+                System.out.println("Server is ruunig ? " + this.isRunning.get());
+            } catch (IOException e) {
+                System.out.println("Server is ruunig ? " + this.isRunning.get());
+            }
+        }
+
+    }
+
+    public void stop() throws IOException {
+        this.isRunning.set(false);
+        serverSocket.close();
+        threadPool.shutdown();
     }
 }

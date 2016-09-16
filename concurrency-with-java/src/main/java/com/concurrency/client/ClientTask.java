@@ -47,7 +47,7 @@ public class ClientTask {
         threadReciverResponseOfServer.start();
         threadSendCommandToServer.start();
 
-        threadSendCommandToServer.join();
+        threadReciverResponseOfServer.join();
         System.out.println("Closing connection with server");
         socket.close();
 
