@@ -33,7 +33,6 @@ public class ServerTask {
         while (this.isRunning.get()) {
             try {
                 Socket socket = serverSocket.accept();
-                System.out.println("Socket is closed "+socket.isConnected());
                 DistribuitorTask distribuitorTask = new DistribuitorTask(socket, this);
                 threadPool.execute(distribuitorTask);
                 System.out.println("Accepting new client in port " + socket.getPort());

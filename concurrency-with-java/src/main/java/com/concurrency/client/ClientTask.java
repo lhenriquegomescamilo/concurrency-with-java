@@ -33,7 +33,6 @@ public class ClientTask {
         Thread threadReciverResponseOfServer = new Thread(() -> {
             Scanner reponse = null;
             try {
-                System.out.println("Reciever command : ");
                 reponse = new Scanner(socket.getInputStream());
                 while (reponse.hasNextLine()) {
                     String reponseServer = reponse.nextLine();
@@ -48,7 +47,6 @@ public class ClientTask {
         threadSendCommandToServer.start();
 
         threadReciverResponseOfServer.join();
-        System.out.println("Closing connection with server");
         socket.close();
 
     }

@@ -43,7 +43,6 @@ public class DistribuitorTask implements Runnable {
                     default:
                         outPrintStream.println("Command not found");
                 }
-                System.out.println("Command of client is "+command);
             }
             outPrintStream.close();
             inputClient.close();
