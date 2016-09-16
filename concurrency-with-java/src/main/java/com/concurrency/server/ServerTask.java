@@ -1,5 +1,7 @@
 package com.concurrency.server;
 
+import com.concurrency.server.factory.FactoryThreads;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,7 +23,7 @@ public class ServerTask {
         System.out.println("---- Begin server -----");
         this.serverSocket = new ServerSocket(12345);
         this.isRunning = new AtomicBoolean(true);
-        this.threadPool = Executors.newFixedThreadPool(SIZE_THREADPOOL);
+        this.threadPool = Executors.newFixedThreadPool(SIZE_THREADPOOL, FactoryThreads.newFactory());
     }
 
     public static void main(String... args) throws IOException {
