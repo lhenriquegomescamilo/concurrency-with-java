@@ -23,7 +23,7 @@ public class CommandC2AccessDataBase implements Callable<String> {
     public String call() throws Exception {
         System.out.println("Executing receiver command C2");
         outputClient.println("processing command c2");
-        Thread.sleep(20000);
+        Thread.sleep(10000);
         Integer number = new Random().nextInt(100) + 1;
         outputClient.println("Command exected with success");
         return number.toString();

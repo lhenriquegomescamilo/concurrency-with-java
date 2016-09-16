@@ -7,8 +7,7 @@ import com.concurrency.server.command.CommandC2ExecuteWS;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * Created by luis.camilo on 13/09/2016.
@@ -46,6 +45,20 @@ public class DistribuitorTask implements Runnable {
                         CommandC2AccessDataBase commandC2AccessDataBase = CommandC2AccessDataBase.newCommandC2AccessDataBase(outputClient);
                         Future<String> futureWS = this.threadPool.submit(commandC2WS);
                         Future<String> futureDatabase = this.threadPool.submit(commandC2AccessDataBase);
+                        this.threadPool.submit(() -> {
+                            System.out.println("Waiting result future WS and DATABASE");
+                            try {
+                                String numberMagicWS = futureWS.get(10, TimeUnit.SECONDS);
+                                String numberMagicDataBase = futureDatabase.get(20, TimeUnit.SECONDS);
+                                outputClient.println("Result of command c2 is " + numberMagicWS + ", " + numberMagicDataBase);
+                            } catch (ExecutionException | InterruptedException | TimeoutException e) {
+                                System.out.println("Cancel command C2");
+                                outputClient.println("Timeout on execute do command C2 ");
+                                futureWS.cancel(true);
+                                futureDatabase.cancel(true);
+                            }
+                            System.out.println("Finalled command");
+                        });
 
                         break;
                     case "end":
